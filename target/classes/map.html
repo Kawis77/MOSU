@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sea unit map</title>
+    <title>Title</title>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
@@ -12,9 +12,7 @@
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
 
-    <style>
-        #map { height: 180px; }
-    </style>
+    <style>#map { height: 1080px; }</style>
 </head>
 <body>
 
@@ -22,16 +20,42 @@
 
 <script th:inline="javascript">
 
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map').setView([52.95, 19.23], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    L.marker([51.5, -0.09]).addTo(map)
-        .bindPopup('Hi Kris')
-        .openPopup();
+    var tracks = [[${tracks}]];
+
+    tracks.forEach(value => {
+        var polygon;
+        L.marker([value.x, value.y]).addTo(map)
+            .bindPopup(value.name)
+            .openPopup()
+            .on('mouseover', () => {
+                polygon = L.polygon([
+                    [value.x, value.y],
+                    [value.destinationX, value.destinationY],
+                ]).addTo(map);
+            })
+            .on('mouseout', () => {
+                map.removeLayer(polygon);
+            })
+
+        ;
+
+
+
+    })
+
+
+
+
+
 
 </script>
+
+
 </body>
 </html>
